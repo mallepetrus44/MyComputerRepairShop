@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using MyComputerRepairShop.DAL;
 using MyComputerRepairShop.Models;
+using MyComputerRepairShop.ViewModels;
 
 namespace MyComputerRepairShop.Controllers
 {
@@ -39,24 +40,40 @@ namespace MyComputerRepairShop.Controllers
         // GET: RepairJobs/Create
         public ActionResult Create()
         {
-            return View();
+            var ReparatieVM = new ReparatieVM
+            {
+                repairJob = new RepairJob
+                {
+                    Startdate = DateTime.Now,
+                    Enddate = DateTime.Now
+                },
+                clients = db.clients.ToList(),
+                workers = db.workers.ToList()
+            };
+            return View(ReparatieVM);
         }
 
-        // POST: RepairJobs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+
+            // POST: RepairJobs/Create
+            // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+            // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+            [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Startdate,Enddate,Detail,Status")] RepairJob repairJob)
+        public ActionResult Create([Bind(Include = "Id,Name,Startdate,Enddate,Detail,Status,repairJob,WorkerID,ClientID")] ReparatieVM reparatieVM)
         {
+
             if (ModelState.IsValid)
             {
-                db.repairJobs.Add(repairJob);
+                RepairJob repair = reparatieVM.repairJob;
+                repair.Worker = db.workers.FirstOrDefault(w => w.Id == reparatieVM.WorkerID);
+                repair.Client = db.clients.FirstOrDefault(c => c.Id == reparatieVM.ClientID);
+                db.repairJobs.Add(repair);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            return View(repairJob);
+            reparatieVM.clients = db.clients.ToList();
+            reparatieVM.workers = db.workers.ToList();
+            return View(reparatieVM);
         }
 
         // GET: RepairJobs/Edit/5
@@ -79,7 +96,7 @@ namespace MyComputerRepairShop.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Startdate,Enddate,Detail,Status")] RepairJob repairJob)
+        public ActionResult Edit([Bind(Include = "Id,Name,Startdate,Enddate,Detail,Status,repairJob,WorkerID,ClientID")] RepairJob repairJob)
         {
             if (ModelState.IsValid)
             {

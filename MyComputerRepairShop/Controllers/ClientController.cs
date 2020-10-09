@@ -47,7 +47,7 @@ namespace MyComputerRepairShop.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Firstname,InFix,Lastname,Fullname,Phonenumber,Address,City")] Client client)
+        public ActionResult Create([Bind(Include = "Id,Firstname,InFix,Lastname,Fullname,Phonenumber,Address,City, Email")] Client client)
         {
             if (ModelState.IsValid)
             {
@@ -80,7 +80,7 @@ namespace MyComputerRepairShop.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Firstname,InFix,Lastname,Fullname,Phonenumber,Address,City")] Client client)
+        public ActionResult Edit([Bind(Include = "Id,Firstname,InFix,Lastname,Fullname,Phonenumber,Address,City, Email")] Client client)
         {
             if (ModelState.IsValid)
             {
